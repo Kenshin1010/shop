@@ -1,26 +1,41 @@
-import React from 'react';
-import { Container, Typography, Button, Box } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Container, Typography, Button, Box, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
-import AuthLayout from '../layouts/AuthLayout';
+import MainLayout from '../layouts/MainLayout';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, login, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      login(); // Sets isAuthenticated to true
+    }
+  }, [login]);
 
   const handleLogin = () => {
-    // Logic to perform login
     navigate('/login');
   };
 
   const handleDashboard = () => {
-    navigate('/dashboard');
+    if (!isAuthenticated) {
+      setOpenSnackbar(true); // Open the snackbar if not authenticated
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   return (
-    <AuthLayout>
+    <MainLayout>
       <Container
         sx={{
           display: 'flex',
@@ -47,20 +62,30 @@ const HomePage: React.FC = () => {
               Sign In
             </Button>
           ) : (
-            <Button
-              variant="contained"
-              onClick={handleDashboard}
-              sx={{ backgroundColor: '#FAD712', color: 'black' }}
-            >
-              Go to Dashboard
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                onClick={handleDashboard}
+                sx={{ backgroundColor: '#FAD712', color: 'black' }}
+              >
+                Go to Dashboard
+              </Button>
+            </>
           )}
         </Box>
         <Button variant="outlined" onClick={toggleTheme} sx={{ marginTop: 2 }}>
           Toggle Theme
         </Button>
+
+        {/* Snackbar for unauthenticated access */}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message="You need to log in to access the Dashboard."
+        />
       </Container>
-    </AuthLayout>
+    </MainLayout>
   );
 };
 

@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+import AuthContext from '../context/AuthProvider';
 
 const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const login = () => setIsAuthenticated(true);
-  const logout = () => setIsAuthenticated(false);
-
-  return { isAuthenticated, login, logout };
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
 export default useAuth;

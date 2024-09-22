@@ -3,6 +3,7 @@ import HomePage from '../pages/HomePage';
 import Login from '../pages/Login';
 import LoginFail from '../pages/LoginFail';
 import Dashboard from '../pages/Dashboard';
+import PrivateRoute from './PrivateRoute';
 
 const AppRoutes = () => {
   return (
@@ -11,7 +12,11 @@ const AppRoutes = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/login-fail" element={<LoginFail />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* Render PrivateRoute directly */}
+        <Route
+          path="/dashboard"
+          element={<PrivateRoute element={<Dashboard />} />}
+        />
       </Routes>
     </Router>
   );

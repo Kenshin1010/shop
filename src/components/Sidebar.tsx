@@ -1,25 +1,43 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Drawer,
+  ListItemButton,
+} from '@mui/material';
+import { useTheme } from '../hooks/useTheme';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
+  const { theme } = useTheme();
+
   return (
-    <aside
-      style={{ width: '200px', padding: '1rem', backgroundColor: '#f4f4f4' }}
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: 200,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: 200,
+          backgroundColor: theme === 'light' ? '#f4f4f4' : '#333',
+          color: theme === 'light' ? '#000' : '#fff',
+        },
+      }}
     >
-      <nav>
-        <ul>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/login-fail">Login Fail</Link>
-          </li>
-        </ul>
-      </nav>
-    </aside>
+      <List>
+        <ListItem component={Link} to="/login" disablePadding>
+          <ListItemButton>
+            <ListItemText primary="Login" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem component={Link} to="/dashboard" disablePadding>
+          <ListItemButton>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Drawer>
   );
 };
 

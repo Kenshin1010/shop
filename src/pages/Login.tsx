@@ -10,29 +10,40 @@ import {
   Divider,
   Alert,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // For routing
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [identifier, setIdentifier] = useState(''); // Username or email
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Effect to show alert message if exists
   useEffect(() => {
-    // Logic to get flash messages (if any)
-    const messages = getFlashMessages(); // This function should be implemented
+    localStorage.removeItem('authToken');
+    const messages = getFlashMessages(); // Implement this function as needed
     if (messages.length > 0) {
       setAlertMessage(messages[0]);
     }
   }, []);
 
-  const handleLogin = (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Logic to handle login, possibly call an API and redirect upon success
-    // If login is successful
-    navigate('/dashboard'); // Redirect to Dashboard
+
+    // Mock login logic (Replace with your actual logic)
+    const isAuthenticated = await mockLogin(identifier, password);
+
+    if (isAuthenticated) {
+      login(); // Call the login function from useAuth
+      localStorage.setItem('authToken', 'yourAuthToken'); // Save token
+      navigate('/dashboard'); // Redirect to Dashboard
+    } else {
+      setAlertMessage('Login failed. Please check your credentials.');
+      navigate('/login-fail'); // Redirect to login fail page
+    }
   };
 
   return (
@@ -59,12 +70,13 @@ const Login: React.FC = () => {
       )}
       <form onSubmit={handleLogin} style={{ width: '100%' }}>
         <TextField
-          label="Email or phone number"
+          label="Email or username"
           variant="outlined"
           fullWidth
           margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          required
         />
         <TextField
           label="Password"
@@ -74,6 +86,7 @@ const Login: React.FC = () => {
           margin="normal"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <FormControlLabel
           control={
@@ -118,9 +131,22 @@ const Login: React.FC = () => {
   );
 };
 
+// Mock login function to simulate login logic
+const mockLogin = async (
+  identifier: string,
+  password: string
+): Promise<boolean> => {
+  // Check if identifier is an email or username
+  if (identifier === 'test@example.com' && password === '1234') {
+    return true; // Successful login with email
+  } else if (identifier === 'test' && password === '1234') {
+    return true; // Successful login with username
+  }
+  return false; // Login failed
+};
+
 // Placeholder function for getting flash messages
 const getFlashMessages = (): string[] => {
-  // Implement your logic to get flash messages
   return [];
 };
 
