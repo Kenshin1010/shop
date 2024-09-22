@@ -11,6 +11,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Login />} />
         <Route path="/login-fail" element={<LoginFail />} />
         {/* Render PrivateRoute directly */}
         <Route
