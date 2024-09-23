@@ -27,11 +27,19 @@ const Auth: React.FC = () => {
   const isRegistering = location.pathname === '/register'; // Check if the path is for registration
 
   useEffect(() => {
-    localStorage.removeItem('authToken');
+    const authToken = localStorage.getItem('authToken');
+    console.log('Auth token:', authToken);
+    if (!authToken) {
+      // If there is no token, you may redirect to the login page
+      console.log('No auth token found, redirecting to login...');
+      // navigate('/login'); // If you are using useNavigate
+    }
     const messages = getFlashMessages(); // Implement this function as needed
     if (messages.length > 0) {
       setAlertMessage(messages[0]);
     }
+    console.log('Auth component mounted');
+    console.log('Auth token:', localStorage.getItem('authToken'));
   }, []);
 
   const handleAuth = async (event: React.FormEvent) => {
